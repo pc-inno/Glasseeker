@@ -16,7 +16,7 @@
 
 Official repository for **Glasseek**, a framework for building deep search agents through verifiable data construction, reinforcement learning with context management, and evaluation with anti-leakage safeguards. Our **Glasseeker-4B** and **Glasseeker-9B** models are built on Qwen3.5-4B and Qwen3.5-9B.
 
-> **Release status:** This repository currently contains the project overview and directory structure. Code, model weights, and datasets are being prepared for release. The paper has not yet been posted to arXiv; the badges above link to the resource placeholders below.
+> **Release status:** This repository currently contains the project overview and directory structure. Code, model weights, and datasets are being prepared for release.
 
 ## Overview
 
