@@ -32,14 +32,19 @@ Deep search requires agents to plan queries, explore the web, verify evidence, a
 
 Performance (%) reported in **Table 2 of the current manuscript**. Higher is better.
 
-| Model | BrowseComp | BrowseComp-ZH | GAIA-Text | XDS-2510 | Seal-0 | LiveBrowseComp |
-| :--- | ---: | ---: | ---: | ---: | ---: | ---: |
-| Glasseeker-4B | 49.0 | 42.9 | 65.0 | 46.0 | 41.4 | 21.2 |
-| **Glasseeker-9B** | **61.6** | **62.6** | **74.8** | **50.0** | **50.0** | **31.3** |
+<p align="center">
+  <a href="assets/benchmark-results.png">
+    <img src="assets/benchmark-results.png" alt="Complete Table 2: performance of 17 models across BrowseComp, BrowseComp-ZH, GAIA-Text, XDS-2510, Seal-0, and LiveBrowseComp. Models are grouped into closed-source LLMs, open-source models of at least 27B parameters, and open-source models of at most 9B parameters. Glasseeker-4B and Glasseeker-9B are highlighted." width="1100">
+  </a>
+</p>
+
+<p align="center"><sub>Full comparison from the manuscript. Click the table to view it at full resolution.</sub></p>
+
+**Reading the table:** Results marked with **†** are quoted from the corresponding technical reports; unmarked model rows were evaluated with our Deep Search Agent. A dash indicates an unreported result. Grouping, emphasis, and superscript markers are reproduced from the manuscript.
 
 The six benchmarks cover English and Chinese web search, text-based agent tasks, reasoning with noisy evidence, and live browsing. **GAIA-Text** is the 103-question text-only subset; **XDS-2510** denotes the 2510 version of xbench-DeepSearch.
 
-Results describe the research models in the manuscript; checkpoints and reproduction instructions are forthcoming. The full comparison and evaluation settings will be available with the paper.
+Results describe the research models in the manuscript; checkpoints and reproduction instructions are forthcoming. Detailed evaluation settings will be available with the paper.
 
 <details>
 <summary><strong>Training ablation: from SFT to CM-GSPO</strong></summary>
