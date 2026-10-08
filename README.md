@@ -16,7 +16,7 @@
 
 Official repository for **Glasseek**, a framework for building deep search agents through verifiable data construction, reinforcement learning with context management, and evaluation with anti-leakage safeguards. Our **Glasseeker-4B** and **Glasseeker-9B** models are built on Qwen3.5-4B and Qwen3.5-9B.
 
-> **Release status:** This repository currently contains the project overview and directory structure. Code, model weights, and datasets are being prepared for release.
+> **Release status:** The evaluation runner and Hermes backend are available in [`Evaluation/`](Evaluation/) and [`Evaluation_backend/`](Evaluation_backend/). Data construction and training code, model weights, and datasets are being prepared for release.
 
 ## Overview
 
@@ -121,14 +121,14 @@ Public links will be added here as each artifact is released.
 - [ ] Data construction pipeline and training datasets
 - [ ] Model checkpoints and model cards
 - [ ] SFT recipes and CM-GSPO training code
-- [ ] Evaluation harness, backend tools, and anti-leakage guardrails
+- [x] Evaluation harness, backend tools, and anti-leakage guardrails
 - [ ] Installation, inference, training, and evaluation instructions
 
 ## Repository
 
-The current directories reserve space for the following components; implementation files and usage instructions will accompany the code release.
+The evaluation runner and backend are available now. The data curation and RL training directories reserve space for future releases.
 
-| Directory | Planned contents |
+| Directory | Contents or planned contents |
 | :--- | :--- |
 | [`Data_curation/`](Data_curation/) | Seed mining, clue construction, verification, and difficulty evaluation |
 | [`RL_training/`](RL_training/) | CM-GSPO training code and configurations |
