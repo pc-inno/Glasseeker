@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "browse-comp-eval"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+    "openai",
+    "azure-identity",
+    "python-dotenv",
+    "requests",
+    "tqdm",
+    "pandas",
+    "numpy",
+    "dateparser==1.2.2",
+]
+
+[project.optional-dependencies]
+ags = ["e2b==2.24.0"]
+
+[tool.setuptools]
+packages = ["browse_comp_eval"]

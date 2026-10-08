@@ -1,0 +1,10 @@
+/.venv/
+/credentials.env
+/config/credentials.env
+/data/
+/tests/
+/output/
+/logs/
+*.log
+__pycache__/
+*.pyc

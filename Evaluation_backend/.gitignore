@@ -1,0 +1,11 @@
+/.venv/
+/.hermes/
+/.env
+/config.yaml
+/output/
+/logs/
+/data/
+/tests/
+*.log
+__pycache__/
+*.pyc

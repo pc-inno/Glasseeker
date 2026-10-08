@@ -1,0 +1,36 @@
+# Sanitized evaluation settings. Set model endpoints and credentials locally.
+model:
+  default: YOUR_MODEL
+  provider: custom
+  base_url: ''
+  api_mode: chat_completions
+  max_tokens: 16384
+toolsets:
+- web
+- code_execution
+- delegation
+- vision
+agent:
+  max_turns: 90
+  gateway_timeout: 1800
+  api_max_retries: 3
+terminal:
+  backend: local
+  timeout: 180
+web:
+  search_backend: search_server
+  extract_backend: fetch_server
+  search_server:
+    endpoint: ''
+    api_key: ''
+  fetch_server:
+    base_url: ''
+compression:
+  enabled: true
+  threshold: 0.5
+  target_ratio: 0.2
+  protect_last_n: 3
+delegation:
+  max_iterations: 50
+  max_concurrent_children: 3
+  max_spawn_depth: 1

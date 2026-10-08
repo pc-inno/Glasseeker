@@ -1,0 +1,8 @@
+name: browse_comp_guard
+version: "0.1.0"
+description: "Fail-closed BrowseComp benchmark-leak guard for evaluation profiles."
+author: "Local BrowseComp evaluation"
+hooks:
+  - pre_tool_call
+  - transform_tool_result
+  - on_session_end
