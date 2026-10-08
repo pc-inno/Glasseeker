@@ -8,7 +8,7 @@
 
 [![arXiv](https://img.shields.io/badge/arXiv-coming_soon-B31B1B?style=flat-square)][paper]
 [![Models](https://img.shields.io/badge/%F0%9F%A4%97_Models-coming_soon-FFD21E?style=flat-square)][models]
-[![Datasets](https://img.shields.io/badge/%F0%9F%A4%97_Datasets-coming_soon-FFD21E?style=flat-square)][datasets]
+[![Datasets](https://img.shields.io/badge/%F0%9F%A4%97_Datasets-SFT_5.7K-FFD21E?style=flat-square)][datasets]
 
 [Overview](#overview) · [Results](#results) · [Method](#method) · [Resources](#resources) · [Repository](#repository) · [Citation](#citation)
 
@@ -16,7 +16,7 @@
 
 Official repository for **Glasseek**, a framework for building deep search agents through verifiable data construction, reinforcement learning with context management, and evaluation with anti-leakage safeguards. Our **Glasseeker-4B** and **Glasseeker-9B** models are built on Qwen3.5-4B and Qwen3.5-9B.
 
-> **Release status:** The evaluation runner and Hermes backend are available in [`Evaluation/`](Evaluation/) and [`Evaluation_backend/`](Evaluation_backend/). Data construction and training code, model weights, and datasets are being prepared for release.
+> **Release status:** Our SFT dataset, containing **5,762 trajectories covering 4,448 unique questions**, is now available via [anonymous access][datasets]. The evaluation runner and Hermes backend are available in [`Evaluation/`](Evaluation/) and [`Evaluation_backend/`](Evaluation_backend/). Data construction and training code and model weights are being prepared for release.
 
 ## Overview
 
@@ -105,20 +105,21 @@ Trajectory audits combine rule-based detection with an LLM judge to identify act
 
 ## Resources
 
-Public links will be added here as each artifact is released.
+Available resources are linked below; additional links will be added as each artifact is released.
 
 | Resource | Description | Link |
 | :--- | :--- | :--- |
 | Paper | Glasseek: A Transparent Recipe for Training and Trustworthy Evaluation of Deep Search Agents | arXiv: coming soon |
 | Glasseeker-4B | Research model based on Qwen3.5-4B | Hugging Face: coming soon |
 | Glasseeker-9B | Research model based on Qwen3.5-9B | Hugging Face: coming soon |
-| Training data | Curated questions and search trajectories | Hugging Face Datasets: coming soon |
+| SFT dataset | 5,762 search trajectories covering 4,448 unique questions | [Anonymous access][datasets] |
 
 ### Release roadmap
 
 - [x] Project overview and repository structure
 - [ ] arXiv preprint and citation metadata
-- [ ] Data construction pipeline and training datasets
+- [x] SFT dataset
+- [ ] Data construction pipeline
 - [ ] Model checkpoints and model cards
 - [ ] SFT recipes and CM-GSPO training code
 - [x] Evaluation harness, backend tools, and anti-leakage guardrails
@@ -144,4 +145,4 @@ The arXiv link and BibTeX entry will be added when the preprint is available.
      Keep "coming soon" labels until the corresponding artifacts are public. -->
 [paper]: #resources
 [models]: #resources
-[datasets]: #resources
+[datasets]: https://anonymous-hf.com/a/9isc7btc5s0n/
