@@ -1,0 +1,3 @@
+# Optional example: replace both absolute paths before installing with crontab.
+# This file is not installed automatically.
+0 * * * * cd /path/to/project && /path/to/project/hermes/.venv/bin/python scripts/collect_uniqueness_incremental.py --run-dir data/runs_v5_demo >> data/collect_uniqueness_hourly.log 2>&1

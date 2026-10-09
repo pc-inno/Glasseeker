@@ -1,0 +1,7 @@
+name: web-fetch-server-tool
+version: 2.0.0
+description: "Reader HTTP backend for the agent-visible web_extract tool."
+author: local
+kind: backend
+provides_web_providers:
+  - fetch_server

@@ -1,0 +1,680 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Recursive Constraint Synthesis Workflow</title>
+  <style>
+    :root {
+      --ink: #141820;
+      --muted: #5f6875;
+      --paper: #fbfbf8;
+      --panel: #ffffff;
+      --line: #cfd6df;
+      --blue: #2f6fed;
+      --green: #17845f;
+      --amber: #b86b1d;
+      --red: #c64655;
+      --violet: #7657d6;
+      --shadow: 0 18px 46px rgba(28, 36, 52, .08);
+      font-family: "DejaVu Sans", Arial, Helvetica, system-ui, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.9), rgba(251,251,248,.96)),
+        #f2f4f7;
+      color: var(--ink);
+    }
+
+    .page {
+      width: min(1280px, calc(100% - 36px));
+      margin: 28px auto 42px;
+      background: var(--paper);
+      border: 1px solid #e1e5ea;
+      box-shadow: var(--shadow);
+    }
+
+    header {
+      padding: 34px 38px 22px;
+      border-bottom: 1px solid #e1e5ea;
+      background: linear-gradient(135deg, #fff 0%, #f4f7fb 100%);
+    }
+
+    .figure-label {
+      color: var(--blue);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(30px, 4.4vw, 56px);
+      line-height: 1.02;
+      letter-spacing: 0;
+    }
+
+    .caption {
+      margin: 16px 0 0;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.55;
+      max-width: 980px;
+    }
+
+    main { padding: 30px 34px 36px; }
+
+    .figure {
+      background: #fff;
+      border: 1px solid var(--line);
+      padding: 28px;
+      overflow: hidden;
+    }
+
+    svg {
+      display: block;
+      width: min(1160px, 100%);
+      height: auto;
+      aspect-ratio: 1160 / 700;
+      margin: 0 auto;
+    }
+
+    .box {
+      fill: #ffffff;
+      stroke: var(--line);
+      stroke-width: 1.4;
+      filter: drop-shadow(0 10px 22px rgba(25, 33, 47, .08));
+    }
+
+    .box-title {
+      font-size: 17px;
+      font-weight: 800;
+      fill: var(--ink);
+      letter-spacing: 0;
+    }
+
+    .box-text {
+      font-size: 12.5px;
+      fill: var(--muted);
+    }
+
+    .tag {
+      font-size: 11px;
+      font-weight: 800;
+      fill: #ffffff;
+      letter-spacing: 0;
+    }
+
+    .small {
+      font-size: 11.5px;
+      fill: var(--muted);
+    }
+
+    .arrow {
+      stroke: #6a7380;
+      stroke-width: 1.7;
+      fill: none;
+      marker-end: url(#arrow);
+    }
+
+    .arrow-soft {
+      stroke: #8b94a3;
+      stroke-width: 1.4;
+      stroke-dasharray: 6 5;
+      fill: none;
+      marker-end: url(#arrow-soft);
+    }
+
+    .thick-arrow {
+      fill: none;
+      stroke: #9fb7df;
+      stroke-width: 18;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      marker-end: url(#wide-arrow);
+      opacity: .62;
+    }
+
+    .flow-arrow {
+      fill: #9fb7df;
+      opacity: .88;
+    }
+
+    .feedback-arrow {
+      fill: none;
+      stroke: #9fb7df;
+      stroke-width: 22;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      marker-end: url(#wide-arrow);
+      opacity: .58;
+    }
+
+    .module {
+      fill: #fbfdff;
+      stroke: #4176c7;
+      stroke-width: 2;
+      stroke-dasharray: 8 7;
+      filter: drop-shadow(0 12px 24px rgba(40, 74, 126, .08));
+    }
+
+    .section-title {
+      font-size: 25px;
+      font-weight: 900;
+      fill: #b40000;
+      letter-spacing: 0;
+    }
+
+    .section-title.green {
+      fill: #4d8b35;
+    }
+
+    .module-title {
+      font-size: 23px;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+
+    .card {
+      fill: #f1f1f1;
+      stroke: #d5d8de;
+      stroke-width: 1;
+      filter: drop-shadow(0 5px 12px rgba(25, 33, 47, .08));
+    }
+
+    .fact-card {
+      fill: #e8f4df;
+      stroke: #bed8aa;
+      stroke-width: 1;
+    }
+
+    .warn-card {
+      fill: #fff0bd;
+      stroke: #e4ca7d;
+      stroke-width: 1;
+    }
+
+    .mini-card {
+      fill: #f5f6f8;
+      stroke: #d6dbe4;
+      stroke-width: 1;
+    }
+
+    .pill {
+      fill: #d8e3f5;
+      stroke: #bfd0ea;
+      stroke-width: 1;
+    }
+
+    .pill-text {
+      font-size: 20px;
+      font-weight: 850;
+      fill: #243c63;
+      text-anchor: middle;
+    }
+
+    .qa-text {
+      font-size: 13.5px;
+      fill: #111827;
+    }
+
+    .qa-bold {
+      font-size: 13.5px;
+      font-weight: 850;
+      fill: #111827;
+    }
+
+    .tiny {
+      font-size: 11px;
+      fill: #4c5666;
+    }
+
+    .step-title {
+      font-size: 15px;
+      font-weight: 900;
+      fill: #c70000;
+    }
+
+    .agent-symbol {
+      fill: #ffffff;
+      stroke: #6e5cf0;
+      stroke-width: 4;
+      filter: drop-shadow(0 8px 18px rgba(84, 73, 210, .18));
+    }
+
+    .loop-panel {
+      fill: #fbfdff;
+      stroke: #d9e3f2;
+      stroke-width: 1.2;
+    }
+
+    .loop-card {
+      fill: #ffffff;
+      stroke: #cfd8e6;
+      stroke-width: 1.3;
+      filter: drop-shadow(0 10px 22px rgba(25, 33, 47, .08));
+    }
+
+    .loop-card.dashed {
+      stroke: #4176c7;
+      stroke-width: 2;
+      stroke-dasharray: 8 7;
+    }
+
+    .loop-title {
+      font-size: 21px;
+      font-weight: 900;
+      fill: #111827;
+    }
+
+    .loop-title.red { fill: #b40000; }
+    .loop-title.green { fill: #4d8b35; }
+    .loop-title.blue { fill: #214f9c; }
+    .loop-title.amber { fill: #a85b12; }
+
+    .loop-text {
+      font-size: 13px;
+      fill: #4b5563;
+    }
+
+    .loop-step {
+      font-size: 12px;
+      font-weight: 900;
+      fill: #607086;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    .loop-arrow {
+      fill: none;
+      stroke: #9fb7df;
+      stroke-width: 18;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      marker-end: url(#wide-arrow);
+      opacity: .78;
+    }
+
+    .loop-arrow.red { stroke: #cf4656; marker-end: url(#wide-arrow-red); }
+    .loop-arrow.green { stroke: #62a85a; marker-end: url(#wide-arrow-green); }
+    .loop-arrow.blue { stroke: #8fb0df; marker-end: url(#wide-arrow); }
+    .loop-arrow.amber { stroke: #c98937; marker-end: url(#wide-arrow-amber); }
+
+    .inner-link {
+      fill: none;
+      stroke: #8aa1c8;
+      stroke-width: 1.6;
+      stroke-dasharray: 6 6;
+      marker-end: url(#arrow-soft);
+    }
+
+    .lane {
+      fill: #f7f9fc;
+      stroke: #d9dee7;
+      stroke-width: 1;
+    }
+
+    .lane-label {
+      font-size: 12px;
+      fill: #667180;
+      font-weight: 800;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    .note {
+      fill: #fffdf7;
+      stroke: #ead8bd;
+      stroke-width: 1.2;
+    }
+
+    .reject {
+      fill: #fff6f7;
+      stroke: #efb7bf;
+      stroke-width: 1.2;
+    }
+
+    .cycle {
+      fill: none;
+      stroke: #d9e0ea;
+      stroke-width: 2;
+      stroke-dasharray: 2 8;
+      opacity: .95;
+    }
+
+    .icon-wrap {
+      fill: #f8fafc;
+      stroke: #d6deea;
+      stroke-width: 1.2;
+    }
+
+    .icon {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.9;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      vector-effect: non-scaling-stroke;
+    }
+
+    .icon.blue { color: var(--blue); }
+    .icon.green { color: var(--green); }
+    .icon.amber { color: var(--amber); }
+    .icon.red { color: var(--red); }
+    .icon.violet { color: var(--violet); }
+
+    .center {
+      fill: #ffffff;
+      stroke: #cbd6e4;
+      stroke-width: 1.4;
+      filter: drop-shadow(0 18px 42px rgba(25, 33, 47, .11));
+    }
+
+    .center-title {
+      font-size: 22px;
+      font-weight: 850;
+      fill: var(--ink);
+      text-anchor: middle;
+    }
+
+    .center-text {
+      font-size: 13px;
+      fill: var(--muted);
+      text-anchor: middle;
+    }
+
+    .phase {
+      font-size: 12px;
+      font-weight: 850;
+      fill: #667180;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    .edge-label {
+      font-size: 11.5px;
+      font-weight: 750;
+      fill: #6a7380;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+
+    .legend {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .legend-item {
+      background: #fff;
+      border: 1px solid #e1e5ea;
+      padding: 14px;
+    }
+
+    .legend-item strong {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+
+    .legend-item span {
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .bar {
+      width: 34px;
+      height: 4px;
+      margin-bottom: 10px;
+      border-radius: 999px;
+      background: var(--blue);
+    }
+
+    .bar.green { background: var(--green); }
+    .bar.amber { background: var(--amber); }
+    .bar.red { background: var(--red); }
+
+    .paper-note {
+      margin: 22px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+      border-top: 1px solid #e1e5ea;
+      padding-top: 16px;
+    }
+
+    @media print {
+      body { background: #fff; }
+      .page {
+        width: 100%;
+        margin: 0;
+        box-shadow: none;
+        border: 0;
+      }
+      header { padding: 20px 8px 14px; }
+      main { padding: 18px 0; }
+      .figure { border: 0; padding: 0; }
+      svg { width: 100%; height: auto; }
+    }
+
+    @media (max-width: 760px) {
+      .page { width: calc(100% - 20px); margin: 10px auto 24px; }
+      header { padding: 24px 20px 18px; }
+      main { padding: 18px 14px 24px; }
+      .figure { padding: 12px; }
+      .legend { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="figure-label">Figure: Automated hard web-QA synthesis</div>
+      <h1>Recursive Local-Constraint Workflow</h1>
+      <p class="caption">
+        The pipeline starts from an obscure seed target, builds ambiguous evidence paths whose intersection uniquely identifies the target, recursively hides intermediate entities, writes a natural question, and filters the result with independent solver rollouts and an official BrowseComp-style answer judge.
+      </p>
+    </header>
+
+    <main>
+      <section class="figure" aria-label="Recursive local-constraint workflow diagram">
+        <svg viewBox="0 0 1160 700" role="img" aria-labelledby="title desc">
+          <title id="title">Recursive Local-Constraint Workflow</title>
+          <desc id="desc">Closed-loop workflow for recursive local-constraint hard web-QA synthesis.</desc>
+
+          <defs>
+            <marker id="wide-arrow" viewBox="0 0 24 24" refX="22" refY="12" markerWidth="24" markerHeight="24" markerUnits="userSpaceOnUse" orient="auto">
+              <path d="M 0 0 L 24 12 L 0 24 z" fill="#9fb7df"></path>
+            </marker>
+            <marker id="wide-arrow-red" viewBox="0 0 24 24" refX="22" refY="12" markerWidth="24" markerHeight="24" markerUnits="userSpaceOnUse" orient="auto">
+              <path d="M 0 0 L 24 12 L 0 24 z" fill="#cf4656"></path>
+            </marker>
+            <marker id="wide-arrow-green" viewBox="0 0 24 24" refX="22" refY="12" markerWidth="24" markerHeight="24" markerUnits="userSpaceOnUse" orient="auto">
+              <path d="M 0 0 L 24 12 L 0 24 z" fill="#62a85a"></path>
+            </marker>
+            <marker id="wide-arrow-amber" viewBox="0 0 24 24" refX="22" refY="12" markerWidth="24" markerHeight="24" markerUnits="userSpaceOnUse" orient="auto">
+              <path d="M 0 0 L 24 12 L 0 24 z" fill="#c98937"></path>
+            </marker>
+            <marker id="arrow-soft" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#8aa1c8"></path>
+            </marker>
+
+            <symbol id="icon-target" viewBox="0 0 24 24">
+              <circle class="icon" cx="12" cy="12" r="8"></circle>
+              <circle class="icon" cx="12" cy="12" r="2"></circle>
+              <path class="icon" d="M12 2v4M12 18v4M2 12h4M18 12h4"></path>
+            </symbol>
+            <symbol id="icon-paths" viewBox="0 0 24 24">
+              <circle class="icon" cx="6" cy="6" r="3"></circle>
+              <circle class="icon" cx="18" cy="6" r="3"></circle>
+              <circle class="icon" cx="12" cy="18" r="3"></circle>
+              <path class="icon" d="M8.5 7h7M7.5 8.5l3.5 6M16.5 8.5l-3.5 6"></path>
+            </symbol>
+            <symbol id="icon-branch" viewBox="0 0 24 24">
+              <circle class="icon" cx="6" cy="5" r="3"></circle>
+              <circle class="icon" cx="18" cy="6" r="3"></circle>
+              <circle class="icon" cx="6" cy="19" r="3"></circle>
+              <path class="icon" d="M6 8v8M9 5h5a4 4 0 0 1 4 4"></path>
+            </symbol>
+            <symbol id="icon-question" viewBox="0 0 24 24">
+              <path class="icon" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <path class="icon" d="M14 2v6h6M9.5 12a2.5 2.5 0 0 1 5 0c0 2-2.5 2-2.5 4M12 19h.01"></path>
+            </symbol>
+            <symbol id="icon-search" viewBox="0 0 24 24">
+              <circle class="icon" cx="11" cy="11" r="7"></circle>
+              <path class="icon" d="M20 20l-3.8-3.8"></path>
+            </symbol>
+            <symbol id="icon-scale" viewBox="0 0 24 24">
+              <path class="icon" d="M12 3v18M5 7h14M6 7l-3 6h6zM18 7l-3 6h6z"></path>
+            </symbol>
+            <symbol id="icon-revise" viewBox="0 0 24 24">
+              <path class="icon" d="M3 12a9 9 0 1 0 3-6.7"></path>
+              <path class="icon" d="M3 4v6h6"></path>
+            </symbol>
+          </defs>
+
+          <rect class="loop-panel" x="26" y="24" width="1108" height="636" rx="18"></rect>
+          <text class="phase" x="580" y="62" text-anchor="middle">Closed-loop recursive local-constraint synthesis</text>
+
+          <path class="loop-arrow blue" d="M 682 111 C 774 112 845 151 892 221"></path>
+          <path class="loop-arrow green" d="M 989 316 C 1001 395 957 469 886 515"></path>
+          <path class="loop-arrow amber" d="M 742 610 C 637 642 502 633 413 584"></path>
+          <path class="loop-arrow blue" d="M 252 497 C 185 438 158 357 183 279"></path>
+          <path class="loop-arrow red" d="M 262 193 C 311 134 390 106 478 109"></path>
+
+          <g transform="translate(448 78)">
+            <rect class="loop-card" x="0" y="0" width="264" height="112" rx="12"></rect>
+            <rect x="0" y="0" width="264" height="8" rx="4" fill="#7657d6"></rect>
+            <circle class="icon-wrap" cx="38" cy="54" r="20"></circle>
+            <g class="icon violet" transform="translate(26 42)">
+              <use href="#icon-target" width="24" height="24"></use>
+            </g>
+            <text class="loop-step" x="74" y="34">Step 1</text>
+            <text class="loop-title red" x="74" y="60">Seed Target &amp; Evidence</text>
+            <text class="loop-text" x="74" y="84">sample obscure answer-bearing entities</text>
+            <text class="loop-text" x="74" y="102">with candidate evidence paths</text>
+          </g>
+
+          <g transform="translate(818 214)">
+            <rect class="loop-card dashed" x="0" y="0" width="282" height="132" rx="18"></rect>
+            <text class="loop-step" x="24" y="34">Step 2</text>
+            <text class="loop-title green" x="24" y="62">Root Constraints</text>
+            <rect class="fact-card" x="24" y="78" width="112" height="34" rx="7"></rect>
+            <text class="tiny" x="80" y="100" text-anchor="middle">core paths</text>
+            <rect class="mini-card" x="148" y="78" width="110" height="34" rx="7"></rect>
+            <text class="tiny" x="203" y="100" text-anchor="middle">distractors</text>
+            <text class="loop-text" x="24" y="124">intersection unique, individual paths broad</text>
+          </g>
+
+          <g transform="translate(764 480)">
+            <rect class="loop-card dashed" x="0" y="0" width="294" height="124" rx="18"></rect>
+            <text class="loop-step" x="24" y="32">Step 3</text>
+            <text class="loop-title amber" x="24" y="60">Recursive Local Paths</text>
+            <circle class="icon-wrap" cx="244" cy="52" r="19"></circle>
+            <g class="icon amber" transform="translate(232 40)">
+              <use href="#icon-branch" width="24" height="24"></use>
+            </g>
+            <text class="loop-text" x="24" y="86">expand selected core or distractor paths</text>
+            <text class="loop-text" x="24" y="106">to increase retrieval hops without direct names</text>
+          </g>
+
+          <g transform="translate(448 548)">
+            <rect class="loop-card" x="0" y="0" width="264" height="104" rx="12"></rect>
+            <rect x="0" y="0" width="264" height="8" rx="4" fill="#2f6fed"></rect>
+            <circle class="icon-wrap" cx="38" cy="52" r="20"></circle>
+            <g class="icon blue" transform="translate(26 40)">
+              <use href="#icon-question" width="24" height="24"></use>
+            </g>
+            <text class="loop-step" x="74" y="32">Step 4</text>
+            <text class="loop-title blue" x="74" y="58">Question Synthesis</text>
+            <text class="loop-text" x="74" y="82">compose root and local clues into</text>
+            <text class="loop-text" x="74" y="100">a natural hard web question</text>
+          </g>
+
+          <g transform="translate(70 444)">
+            <rect class="loop-card" x="0" y="0" width="300" height="132" rx="12"></rect>
+            <rect x="0" y="0" width="300" height="8" rx="4" fill="#17845f"></rect>
+            <circle class="icon-wrap" cx="38" cy="58" r="20"></circle>
+            <g class="icon green" transform="translate(26 46)">
+              <use href="#icon-scale" width="24" height="24"></use>
+            </g>
+            <text class="loop-step" x="74" y="34">Step 5</text>
+            <text class="loop-title green" x="74" y="60">Solver Rollouts &amp; Judge</text>
+            <text class="loop-text" x="74" y="84">run independent attempts and semantic</text>
+            <text class="loop-text" x="74" y="102">answer grading; keep split outcomes</text>
+          </g>
+
+          <g transform="translate(72 166)">
+            <rect class="loop-card" x="0" y="0" width="290" height="132" rx="12"></rect>
+            <rect x="0" y="0" width="290" height="8" rx="4" fill="#cf4656"></rect>
+            <circle class="icon-wrap" cx="38" cy="58" r="20"></circle>
+            <g class="icon red" transform="translate(26 46)">
+              <use href="#icon-revise" width="24" height="24"></use>
+            </g>
+            <text class="loop-step" x="74" y="34">Feedback</text>
+            <text class="loop-title red" x="74" y="60">Revise or Filter</text>
+            <text class="loop-text" x="74" y="84">repair invalid constraints, shallow paths,</text>
+            <text class="loop-text" x="74" y="102">ambiguous answers, or too-easy questions</text>
+          </g>
+
+          <g transform="translate(424 282)">
+            <rect class="center" x="0" y="0" width="312" height="132" rx="16"></rect>
+            <path class="agent-symbol" transform="translate(128 14) scale(.55)" d="M48 7l12 19 22-1-11 19 12 19-22-1-13 19-12-19-22 1 12-19-11-19 22 1z"></path>
+            <text class="center-title" x="156" y="72">Accepted Hard Instance</text>
+            <text class="center-text" x="156" y="98">unique target, recursive clues,</text>
+            <text class="center-text" x="156" y="118">question, answer, solver traces</text>
+          </g>
+
+          <path class="inner-link" d="M 818 284 C 770 295 748 314 736 335"></path>
+          <path class="inner-link" d="M 764 526 C 724 481 704 445 692 414"></path>
+          <path class="inner-link" d="M 580 548 C 580 503 580 457 580 414"></path>
+          <path class="inner-link" d="M 370 505 C 404 448 431 416 456 393"></path>
+          <path class="inner-link" d="M 362 238 C 397 274 423 300 449 322"></path>
+
+          <g transform="translate(798 72)">
+            <rect class="note" x="0" y="0" width="300" height="48" rx="8"></rect>
+            <text class="box-text" x="16" y="21">Loop stops only after quality gates pass:</text>
+            <text class="box-text" x="16" y="37">global uniqueness plus nontrivial solver split.</text>
+          </g>
+        </svg>
+      </section>
+
+      <section class="legend" aria-label="Workflow notes">
+        <div class="legend-item">
+          <div class="bar"></div>
+          <strong>Compositional ambiguity</strong>
+          <span>Core clues remain individually underspecified; uniqueness comes from their intersection.</span>
+        </div>
+        <div class="legend-item">
+          <div class="bar amber"></div>
+          <strong>Recursive hiding</strong>
+          <span>Intermediate entities inside clues are replaced by their own local constraint trees.</span>
+        </div>
+        <div class="legend-item">
+          <div class="bar green"></div>
+          <strong>External solvability check</strong>
+          <span>Independent solver rollouts and a BrowseComp-style judge estimate difficulty.</span>
+        </div>
+        <div class="legend-item">
+          <div class="bar red"></div>
+          <strong>Quality control</strong>
+          <span>Failures trigger constraint revision, question revision, rejection, or manual review.</span>
+        </div>
+      </section>
+
+      <p class="paper-note">
+        Suggested caption: Overview of the recursive local-constraint synthesis pipeline. The system constructs broad evidence paths for an obscure target, verifies that their intersection uniquely identifies the target, recursively expands selected intermediate entities to increase retrieval depth, and filters generated questions with solver rollouts and an official BrowseComp-style answer judge.
+      </p>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "target": {
+    "entity_id": "demo_fictional_museum",
+    "name": "Example Museum",
+    "entity_type": "museum",
+    "answer_field": "founding year",
+    "answer": "1900",
+    "description": "Fictional fixture for offline dry-run only.",
+    "source_urls": [],
+    "domain_family": "history"
+  },
+  "seed_note": "Synthetic demonstration data, not a verified research seed."
+}

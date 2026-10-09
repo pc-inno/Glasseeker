@@ -1,0 +1,29 @@
+# Private configuration; only reviewed examples may be committed.
+.env*
+!.env.example
+!.env*.example
+
+# Generated run data and exports.
+/data/
+/output/
+.hermes/
+auth.json
+auth.lock
+credentials.json
+*.pem
+*.key
+*.log
+
+# Python environments and caches.
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+.coverage
+htmlcov/
+build/
+dist/
+*.egg-info/

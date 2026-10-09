@@ -1,0 +1,54 @@
+# Public runtime profile. Model values come from the workflow's private .env_v5.
+# Hermes expands ${VARIABLE}; the workflow's .env parser itself does not.
+model:
+  provider: custom
+  default: "${DEFAULT_MODEL}"
+  base_url: "${DEFAULT_BASE_URL}"
+  api_key: "${DEFAULT_API_KEY}"
+
+# Portable default supported by the bundled provider; configure TAVILY_API_KEY
+# in .hermes/.env. To use your own services, see the separate server example.
+web:
+  search_backend: tavily
+  extract_backend: tavily
+
+terminal:
+  backend: local
+  cwd: .
+  timeout: 180
+  auto_source_bashrc: false
+  env_passthrough: []
+code_execution:
+  mode: project
+memory:
+  memory_enabled: false
+  user_profile_enabled: false
+curator:
+  enabled: false
+checkpoints:
+  enabled: false
+compression:
+  enabled: true
+  threshold: 0.8
+  target_ratio: 0.2
+auxiliary:
+  vision:
+    provider: custom
+    model: "${DEFAULT_MODEL}"
+    base_url: "${DEFAULT_BASE_URL}"
+    api_key: "${DEFAULT_API_KEY}"
+delegation:
+  max_iterations: 200
+  child_timeout_seconds: 7200
+  max_concurrent_children: 3
+  max_spawn_depth: 1
+browser:
+  cdp_url: ""
+  allow_private_urls: false
+security:
+  allow_private_urls: false
+  redact_secrets: true
+logging:
+  level: INFO
+plugins:
+  disabled: []

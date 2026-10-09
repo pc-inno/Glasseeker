@@ -1,0 +1,6 @@
+name: browse_comp_trace_capture
+version: "0.1.0"
+description: "Read-only first-request context capture for BrowseComp SFT export."
+author: "Local BrowseComp evaluation"
+hooks:
+  - pre_api_request

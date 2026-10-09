@@ -1,0 +1,20 @@
+# Optional replacement for the web section of .hermes/config.yaml.
+# These service implementations are NOT included in this repository.
+# Fill URLs with your own compatible services. Never publish real credentials.
+web:
+  search_backend: search_server
+  extract_backend: fetch_server
+  search_server:
+    endpoint: ""
+    api_key: "${SEARCH_SERVER_API_KEY}"
+    timeout: 30.0
+    max_retries: 3
+  fetch_server:
+    base_url: ""
+    extract_mode: text
+    timeout: 180.0
+    max_concurrent: 5
+    jina_api_key: "${FETCH_SERVER_JINA_API_KEY}"
+    llm_base_url: "${DEFAULT_BASE_URL}"
+    llm_model: "${DEFAULT_MODEL}"
+    llm_api_key: "${DEFAULT_API_KEY}"

@@ -1,0 +1,10 @@
+name: web-search-server-tool
+version: 2.0.0
+description: "SearchTool HTTP backend for the agent-visible web_search tool."
+author: local
+kind: backend
+provides_web_providers:
+  - search_server
+requires_env:
+  - SEARCH_SERVER_ENDPOINT
+  - SEARCH_SERVER_API_KEY
